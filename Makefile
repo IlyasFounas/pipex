@@ -1,6 +1,7 @@
 NAME    = pipex
-SRC     = srcs/main.c \
-		  srcs/manage_errors.c \
+SRC     = srcs/pipex.c \
+		  srcs/pipex_utils.c \
+		  srcs/check_errors.c \
 		  ft_printf/ft_printf.c \
 		  ft_printf/ft_printf_utils.c 
 

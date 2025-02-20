@@ -1,43 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   manage_errors.c                                    :+:      :+:    :+:   */
+/*   pipex_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 16:59:44 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/15 17:52:36 by ifounas          ###   ########.fr       */
+/*   Created: 2025/02/20 18:17:45 by ifounas           #+#    #+#             */
+/*   Updated: 2025/02/20 18:18:36 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	check_args(int arc)
+void	print_infos(t_pipex pipex)
 {
-	if (arc != 5)
-	{
-        perror("Error\nBad arguments");
-		exit(1);
-	}
-}
+	int	i;
 
-void	check_fd(int fd)
-{
-	if (fd == -1)
-	{
-        perror("Error\nPut a valid file");
-		close(fd);
-		exit(1);
-	}
-}
-
-void	check_fork(pid_t p, int *fd)
-{
-	if (p < 0)
-	{
-        perror("Error\nFork failed");
-		close(fd[0]);
-		close(fd[1]);
-		exit(1);
-	}
+	i = -1;
+	ft_printf("YOUR FILES : < %s | %s >", pipex.file1, pipex.file2);
+	ft_printf("\nCMD1 : \n");
+	while (pipex.cmd1[++i])
+		ft_printf("- %s\n", pipex.cmd1[i]);
+	i = -1;
+	ft_printf("CMD2 : \n");
+	while (pipex.cmd2[++i])
+		ft_printf("- %s\n", pipex.cmd2[i]);
 }
