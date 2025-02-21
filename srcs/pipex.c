@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 15:29:17 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/20 18:52:01 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/21 18:33:37 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,57 +19,77 @@ void	create_file(char *name, t_pipex *pipex)
 	{
 		pipex->fd[1] = open(name, O_CREAT | O_RDWR, 0777);
 		if (pipex->fd[1] == -1)
-			close_fd(pipex, 1);
+			free_pipex(pipex, 1);
 	}
 }
 
-void	execute_cmd1(char *file, char *cmd, char *params)
+void	free_args(t_pipex *pipex, char **args, int yes)
 {
-	int		p2[2];
-	char	*args[] = {cmd, file, params, NULL};
-	char	*res;
+	int	y;
 
-	res = ft_strjoin("/bin/", cmd);
-	if (!res)
-		return ;
-	if (pipe(p2) == -1)
-		return ;
-	p2[1] = execve(res, args, NULL);
-	free(res);
+	y = -1;
+	if (args)
+		while (args[++y])
+			free(args[y]);
+	if (yes == 1)
+		free_pipex(pipex, 1);
+	return ;
 }
 
-char	*find_params(char *cmd)
+char	**fill_args(t_pipex *pipex, char *file, char **cmd)
 {
-	int	i;
+	int		i;
+	int		cmd_i;
+	char	**args;
 
 	i = 0;
-	while (cmd[i] && cmd[i] != ' ')
+	cmd_i = 0;
+	while (cmd[i])
 		i++;
-	if (cmd[i + 1] == '\0')
-		return (NULL);
-	return (&cmd[i + 1]);
-}
-
-char	**fill_params(t_pipex *pipex, char *cmd)
-{
-	char **args;
-
-	args = ft_split(cmd, ' ');
+	args = malloc((i + 2) * sizeof(char *));
 	if (!args)
-		close_fd(pipex, 1);
+		free_pipex(pipex, 1);
+	if (i == 1)
+	{
+		args[0] = ft_strdup(cmd[0]);
+		if (!args[0])
+			free_args(pipex, args, 1);
+		args[1] = ft_strdup(file);
+		if (!args[1])
+			free_args(pipex, args, 1);
+		args[2] = NULL;
+		return (args);
+	}
+	i = 0;
+	while (cmd[cmd_i])
+	{
+		if (i == 1)
+			args[i] = ft_strdup(file);
+		else
+		{
+			args[i] = ft_strdup(cmd[cmd_i]);
+			cmd_i++;
+		}
+		if (!args[i])
+			free_args(pipex, args, 1);
+		i++;
+	}
+	args[i] = NULL;
 	return (args);
 }
 
-void	fill_t_pipex(t_pipex *pipex, char *file2, char *cmd1, char *cmd2)
+void	execute_cmd1(t_pipex *pipex, char *file, char **cmd)
 {
-	int	i;
+	char	**args;
+	char	*res;
 
-	i = 0;
-	pipex->file2 = ft_strdup(file2);
-	if (!pipex->file2)
-		close_fd(pipex, 1);
-	pipex->cmd1 = fill_params(pipex, cmd1);
-	pipex->cmd2 = fill_params(pipex, cmd2);
+	args = fill_args(pipex, file, cmd);
+	res = ft_strjoin("/bin/", cmd[0]);
+	if (!res)
+		return ;
+	execve(res, args, NULL);
+	free(res);
+	free_args(pipex, args, 0);
 }
 
 int	main(int arc, char **arv, char **envp)
@@ -87,17 +107,16 @@ int	main(int arc, char **arv, char **envp)
 	check_fork(p, &pipex);
 	pipex.file1 = ft_strdup(arv[1]);
 	if (!pipex.file1)
-		close_fd(&pipex, 1);
+		free_pipex(&pipex, 1);
 	if (p == 0)
 	{
-		fill_t_pipex(&pipex, arv[4], arv[2], arv[3]);
-		print_infos(pipex);
-		close_fd(&pipex, 0);
+		fill_pipex(&pipex, arv[4], arv[2], arv[3]);
+		dup2(pipex.fd[1], 1);
+		execute_cmd1(&pipex, pipex.file1, pipex.cmd1);
+		free_pipex(&pipex, 0);
 	}
 	else
 		free(pipex.file1);
 	return (0);
 }
-
 // < main.c cat | cat  > cpy.c
-// ft_printf("cmd1 : %s\ncmd2 : %s\n", arv[2], arv[3]);

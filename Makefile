@@ -7,25 +7,26 @@ SRC     = srcs/pipex.c \
 
 OBJ_DIR = objs
 OBJ     = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.c=.o)))
-CFLAGS  = -Wall -Wextra -Werror -g3 -I/usr/include -I../libft/includes -I includes
+CFLAGS  = -Wall -Wextra -Werror -g3 -Ilibft/includes -Iincludes
 CC      = cc
 
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-$(NAME): $(LIBFT) $(OBJ) includes/pipex.h Makefile ft_printf/ft_printf.h
+$(NAME): $(LIBFT) $(OBJ) includes/pipex.h ft_printf/ft_printf.h
 	$(CC) $(OBJ) $(LIBFT) -o $(NAME)
 
-$(OBJ_DIR)/%.o: srcs/%.c
-	mkdir -p $(OBJ_DIR)
+$(OBJ_DIR)/%.o: srcs/%.c includes/pipex.h | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/%.o: ft_printf/%.c ft_printf/ft_printf.h
-	mkdir -p $(OBJ_DIR)
+$(OBJ_DIR)/%.o: ft_printf/%.c ft_printf/ft_printf.h | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIBFT):
+$(LIBFT): force
 	make -C $(LIBFT_DIR)
+
+$(OBJ_DIR):
+		mkdir -p $(OBJ_DIR)
 
 clean:
 	rm -rf $(OBJ_DIR)
@@ -37,8 +38,9 @@ fclean: clean
 
 re: fclean all
 
-
 all: $(NAME)
 
-.PHONY: all clean fclean re
+force:
+
+.PHONY: all clean fclean re force
 

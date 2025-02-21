@@ -6,32 +6,11 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:59:44 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/20 18:46:10 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/21 15:09:50 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	close_fd(t_pipex *pipex, int exit_fd)
-{
-	int	i;
-
-	i = -1;
-	if (pipex->file1)
-		free(pipex->file1);
-	if (pipex->file2)
-		free(pipex->file2);
-	while (pipex->cmd1[++i])
-		free(pipex->cmd1[i]);
-	i = -1;
-	while (pipex->cmd2[++i])
-		free(pipex->cmd2[i]);
-	free(pipex->cmd1);
-	free(pipex->cmd2);
-	close(pipex->fd[0]);
-	close(pipex->fd[1]);
-	exit(exit_fd);
-}
 
 void	check_args(int arc)
 {
@@ -57,6 +36,6 @@ void	check_fork(pid_t p, t_pipex *pipex)
 	if (p < 0)
 	{
 		ft_putstr_fd("Error\nFork failed", 2);
-		close_fd(pipex, 1);
+		free_pipex(pipex, 1);
 	}
 }
