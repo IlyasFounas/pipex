@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 18:17:45 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/21 15:10:08 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/22 16:59:26 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,19 @@ void	free_pipex(t_pipex *pipex, int exit_fd)
 	close(pipex->fd[0]);
 	close(pipex->fd[1]);
 	exit(exit_fd);
+}
+
+void	free_args(t_pipex *pipex, char **args, int yes)
+{
+	int	y;
+
+	y = -1;
+	if (args)
+		while (args[++y])
+			free(args[y]);
+	if (yes == 1)
+		free_pipex(pipex, 1);
+	return ;
 }
 
 void	print_infos(t_pipex pipex)
@@ -62,4 +75,15 @@ void	fill_pipex(t_pipex *pipex, char *file2, char *cmd1, char *cmd2)
 	pipex->cmd2 = ft_split(cmd2, ' ');
 	if (!pipex->cmd2)
 		free_pipex(pipex, 1);
+}
+
+void	create_file(char *name, t_pipex *pipex)
+{
+	pipex->fd[1] = open(name, O_RDWR | O_TRUNC);
+	if (pipex->fd[1] == -1)
+	{
+		pipex->fd[1] = open(name, O_CREAT | O_RDWR, 0777);
+		if (pipex->fd[1] == -1)
+			free_pipex(pipex, 1);
+	}
 }
