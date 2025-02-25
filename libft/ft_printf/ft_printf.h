@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 11:40:35 by ifounas           #+#    #+#             */
-/*   Updated: 2024/12/16 15:54:33 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/24 15:07:12 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 # include <unistd.h>
 
 int		ft_printf(const char *f, ...);
-int		ft_putchar(char c);
-int		ft_putstr(char *s);
-size_t	ft_strlen(const char *s);
-void	ft_putnbr(int n, int *counter);
+int		ft_putchar_printf(char c);
+int		ft_putstr_printf(char *s);
+size_t	ft_strlen_printf(const char *s);
+void	ft_putnbr_printf(int n, int *counter);
 
 #endif

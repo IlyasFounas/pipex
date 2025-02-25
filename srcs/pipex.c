@@ -6,52 +6,39 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 15:29:17 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/22 18:35:23 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/25 20:00:02 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	**fill_args(t_pipex *pipex, char *file, char **cmd)
+static void	child_process(t_pipex *pipex, pid_t p, char **envp)
 {
-	int		i;
-	int		cmd_i;
-	char	**args;
+	int	filein;
 
-	i = 0;
-	cmd_i = 0;
-	while (cmd[i])
-		i++;
-	args = malloc((i + 2) * sizeof(char *));
-	if (!args)
-		free_pipex(pipex, 1);
-	if (i == 1)
+	if (p == 0)
 	{
-		args[0] = ft_strdup(cmd[0]);
-		if (!args[0])
-			free_args(pipex, args, 1);
-		args[1] = ft_strdup(file);
-		if (!args[1])
-			free_args(pipex, args, 1);
-		args[2] = NULL;
-		return (args);
+		filein = open(pipex->file1, O_RDONLY, 0777);
+		if (filein == -1)
+			free_pipex(pipex, 0);
+		dup2(pipex->fd[WRITE_END], STDOUT_FILENO);
+		dup2(filein, STDIN_FILENO);
+		close(pipex->fd[READ_END]);
+		execute_cmd(pipex, pipex->cmd1, envp);
+		free_pipex(pipex, 0);
 	}
-	i = 0;
-	while (cmd[cmd_i])
-	{
-		if (i == 1)
-			args[i] = ft_strdup(file);
-		else
-		{
-			args[i] = ft_strdup(cmd[cmd_i]);
-			cmd_i++;
-		}
-		if (!args[i])
-			free_args(pipex, args, 1);
-		i++;
-	}
-	args[i] = NULL;
-	return (args);
+}
+
+static void	parent_process_bis(t_pipex *pipex, char **envp)
+{
+	int	fileout;
+
+	fileout = create_file(pipex->file2, pipex);
+	dup2(pipex->fd[READ_END], STDIN_FILENO);
+	dup2(fileout, STDOUT_FILENO);
+	close(pipex->fd[WRITE_END]);
+	execute_cmd(pipex, pipex->cmd2, envp);
+	free_pipex(pipex, 0);
 }
 
 int	main(int arc, char **arv, char **envp)
@@ -61,11 +48,7 @@ int	main(int arc, char **arv, char **envp)
 
 	check_args(arc);
 	ft_memset(&pipex, 0, sizeof(t_pipex));
-	pipex.fd[0] = open(arv[1], O_RDONLY);
-	check_fd(pipex.fd[0]);
-	create_file(arv[4], &pipex);
 	fill_pipex(&pipex, arv[4], arv[2], arv[3]);
-	
 	pipe(pipex.fd);
 	p = fork();
 	check_fork(p, &pipex);
@@ -74,10 +57,8 @@ int	main(int arc, char **arv, char **envp)
 		free_pipex(&pipex, 1);
 	if (p == 0)
 		child_process(&pipex, p, envp);
-	
-	p = fork();
-	check_fork(p, &pipex);
-	if (p == 0)
-		child_process_bis(&pipex, p, envp);
+	waitpid(p, NULL, 0);
+	parent_process_bis(&pipex, envp);
+	free_pipex(&pipex, 0);
 	return (0);
 }

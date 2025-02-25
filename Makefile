@@ -1,10 +1,8 @@
 NAME    = pipex
 SRC     = srcs/pipex.c \
 		  srcs/pipex_utils.c \
-		  srcs/check_errors.c \
-		  srcs/process.c \
-		  ft_printf/ft_printf.c \
-		  ft_printf/ft_printf_utils.c 
+		  srcs/pipex_execute.c \
+		  srcs/pipex_check_errors.c 
 
 OBJ_DIR = objs
 OBJ     = $(addprefix $(OBJ_DIR)/, $(notdir $(SRC:.c=.o)))
@@ -14,13 +12,10 @@ CC      = cc
 LIBFT_DIR = libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-$(NAME): $(LIBFT) $(OBJ) includes/pipex.h ft_printf/ft_printf.h
+$(NAME): $(LIBFT) $(OBJ) includes/pipex.h
 	$(CC) $(OBJ) $(LIBFT) -o $(NAME)
 
 $(OBJ_DIR)/%.o: srcs/%.c includes/pipex.h | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(OBJ_DIR)/%.o: ft_printf/%.c ft_printf/ft_printf.h | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT): force
