@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:43:23 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/25 19:31:46 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/26 11:36:50 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static char	*return_path(char **tab, char *cmd)
 		path = ft_strjoin(res, cmd);
 		if (!path)
 			return (free(res), NULL);
-		if (access(path, F_OK) == 0)
+		if (access(path, X_OK) == 0)
 			return (free(res), path);
 		free(res);
 		free(path);
@@ -56,7 +56,7 @@ static char	*return_right_path(char **envp, char *cmd)
 	tab = ft_split(envp[i] + 5, ':');
 	if (!tab)
 		return (NULL);
-	return (return_path(tab, cmd));
+	return (free_tab(tab), return_path(tab, cmd));
 }
 
 void	execute_cmd(t_pipex *pipex, char **cmd, char **envp)
@@ -67,5 +67,6 @@ void	execute_cmd(t_pipex *pipex, char **cmd, char **envp)
 	if (!path)
 		free_pipex(pipex, 1);
 	execve(path, cmd, envp);
+	free(path);
 	free_pipex(pipex, 1);
 }
