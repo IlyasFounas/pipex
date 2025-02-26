@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 15:32:25 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/26 11:32:23 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/26 13:54:09 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ typedef struct s_pipex
 
 // pipex_check_errors.c
 void		check_args(int arc);
-void		check_fd(int fd, t_pipex *pipex);
+void		check_fd(int fd, t_pipex *pipex, int file);
 void		check_fork(pid_t p, t_pipex *pipex);
 
 // pipex_execute.c
@@ -43,7 +43,6 @@ void		execute_cmd(t_pipex *pipex, char **cmd, char **envp);
 // pipex_utils.c
 void		fill_pipex(t_pipex *pipex, char *file2, char *cmd1, char *cmd2);
 void		free_pipex(t_pipex *pipex, int exit_fd);
-int			create_file(char *name, t_pipex *pipex);
 void		free_tab(char **tab);
 
 #endif

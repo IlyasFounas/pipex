@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:59:44 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/26 10:49:09 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/26 14:08:37 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,20 @@ void	check_args(int arc)
 	}
 }
 
-void	check_fd(int fd, t_pipex *pipex)
+void	check_fd(int fd, t_pipex *pipex, int file)
 {
 	if (fd == -1)
 	{
-		ft_putstr_fd("Error\nPut a valid file", 2);
+		if (file == 1)
+		{
+			ft_putstr_fd("Error\nOpen this file failed : ", 2);
+			ft_putstr_fd(pipex->file1, 2);
+		}
+		else
+		{
+			ft_putstr_fd("Error\nOpen this file failed : ", 2);
+			ft_putstr_fd(pipex->file2, 2);
+		}
 		free_pipex(pipex, 1);
 		exit(1);
 	}

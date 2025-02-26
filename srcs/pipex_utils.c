@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 18:17:45 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/26 11:33:01 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/26 14:34:22 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ void	free_pipex(t_pipex *pipex, int exit_fd)
 	free(pipex->cmd2);
 	close(pipex->fd[0]);
 	close(pipex->fd[1]);
+	close(pipex->fdout);
+	close(pipex->fdin);
 	exit(exit_fd);
 }
 
@@ -60,17 +62,8 @@ void	fill_pipex(t_pipex *pipex, char *file2, char *cmd1, char *cmd2)
 	pipex->cmd2 = ft_split(cmd2, ' ');
 	if (!pipex->cmd2)
 		free_pipex(pipex, 1);
-}
-
-int	create_file(char *name, t_pipex *pipex)
-{
-	int	fileout;
-
-	fileout = open(name, O_RDWR | O_TRUNC);
-	if (fileout == -1)
-	{
-		fileout = open(name, O_CREAT | O_RDWR, 0777);
-		check_fd(fileout, pipex);
-	}
-	return (fileout);
+	pipex->fdin = open(pipex->file1, O_RDONLY, 0777);
+	check_fd(pipex->fdin, pipex, 1);
+	pipex->fdout = open(pipex->file2, O_CREAT | O_RDWR | O_TRUNC, 0777);
+	check_fd(pipex->fdout, pipex, 2);
 }

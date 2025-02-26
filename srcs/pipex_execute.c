@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:43:23 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/26 11:36:50 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/26 14:12:53 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ static char	*return_path(char **tab, char *cmd)
 static char	*return_right_path(char **envp, char *cmd)
 {
 	char	**tab;
+	char	*path;
 	int		i;
 	int		yes;
 
@@ -56,7 +57,8 @@ static char	*return_right_path(char **envp, char *cmd)
 	tab = ft_split(envp[i] + 5, ':');
 	if (!tab)
 		return (NULL);
-	return (free_tab(tab), return_path(tab, cmd));
+	path = return_path(tab, cmd);
+	return (free_tab(tab), path);
 }
 
 void	execute_cmd(t_pipex *pipex, char **cmd, char **envp)
