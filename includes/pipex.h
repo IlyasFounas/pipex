@@ -6,12 +6,12 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 15:32:25 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/26 13:54:09 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/27 10:40:38 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PUSH_SWAP_H
-# define PUSH_SWAP_H
+#ifndef PIPEX_H
+# define PIPEX_H
 
 # include "../libft/libft.h"
 # include <fcntl.h>
@@ -30,6 +30,7 @@ typedef struct s_pipex
 	int		fd[2];
 	int		fdin;
 	int		fdout;
+	int		pid[2];
 }			t_pipex;
 
 // pipex_check_errors.c
