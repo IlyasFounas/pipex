@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 18:17:45 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/27 14:06:24 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/27 14:53:57 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ void	fill_pipex(t_pipex *pipex, char *file2, char *cmd1, char *cmd2)
 		pipex->fdin = open(pipex->file1, O_RDONLY, 0777);
 		check_fd(pipex->fdin, pipex, 1);
 	}
+	else
+		pipex->fdout = -2;
 	if (access(pipex->file2, F_OK) != 0)
 		pipex->fdout = open(pipex->file2, O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	else if (access(pipex->file2, W_OK) == 0)
