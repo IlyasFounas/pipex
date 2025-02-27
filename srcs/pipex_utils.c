@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 18:17:45 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/26 18:08:42 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/27 14:06:24 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,6 @@ void	free_tab(char **tab)
 
 void	fill_pipex(t_pipex *pipex, char *file2, char *cmd1, char *cmd2)
 {
-	int	i;
-
-	i = 0;
 	pipex->file2 = ft_strdup(file2);
 	if (!pipex->file2)
 		free_pipex(pipex, 1);
@@ -66,8 +63,16 @@ void	fill_pipex(t_pipex *pipex, char *file2, char *cmd1, char *cmd2)
 	pipex->cmd2 = ft_split(cmd2, ' ');
 	if (!pipex->cmd2)
 		free_pipex(pipex, 1);
-	pipex->fdin = open(pipex->file1, O_RDONLY, 0777);
-	check_fd(pipex->fdin, pipex, 1);
-	pipex->fdout = open(pipex->file2, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	if (access(pipex->file1, F_OK | R_OK) == 0)
+	{
+		pipex->fdin = open(pipex->file1, O_RDONLY, 0777);
+		check_fd(pipex->fdin, pipex, 1);
+	}
+	if (access(pipex->file2, F_OK) != 0)
+		pipex->fdout = open(pipex->file2, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	else if (access(pipex->file2, W_OK) == 0)
+		pipex->fdout = open(pipex->file2, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	else
+		pipex->fdout = -2;
 	check_fd(pipex->fdout, pipex, 2);
 }

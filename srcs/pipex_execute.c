@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:43:23 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/27 10:37:27 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/27 11:24:58 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,12 @@ void	execute_cmd(t_pipex *pipex, char **cmd, char **envp)
 
 	path = return_right_path(envp, cmd[0]);
 	if (!path)
+	{
+		ft_putstr_fd("command not found: ", 2);
+		ft_putstr_fd(cmd[0], 2);
+		ft_putstr_fd("\n", 2);
 		free_pipex(pipex, 1);
+	}
 	execve(path, cmd, envp);
 	free(path);
 	free_pipex(pipex, 1);

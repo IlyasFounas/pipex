@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 15:29:17 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/26 18:24:53 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/27 14:06:56 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ static void	child_process(t_pipex *pipex, char **envp)
 
 static void	child_process_bis(t_pipex *pipex, char **envp)
 {
+	if (pipex->fdout == -2)
+		free_pipex(pipex, 1);
 	dup2(pipex->fd[0], STDIN_FILENO);
 	dup2(pipex->fdout, STDOUT_FILENO);
 	close(pipex->fd[0]);
