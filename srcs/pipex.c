@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 15:29:17 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/27 14:54:01 by ifounas          ###   ########.fr       */
+/*   Created: 2025/02/27 16:59:16 by ifounas           #+#    #+#             */
+/*   Updated: 2025/02/27 17:28:34 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,20 @@
 
 static void	child_process(t_pipex *pipex, char **envp)
 {
-	if (pipex->fdout == -2)
+	if (pipex->fdin == -2)
+	{
+		ft_putstr_fd("permission denied: ", 2);
+		ft_putstr_fd(pipex->file1, 2);
+		ft_putstr_fd("\n", 2);
 		free_pipex(pipex, 1);
+	}
+	else if (pipex->fdin == -3)
+	{
+		ft_putstr_fd("no such file or directory: ", 2);
+		ft_putstr_fd(pipex->file1, 2);
+		ft_putstr_fd("\n", 2);
+		free_pipex(pipex, 1);
+	}
 	dup2(pipex->fd[1], STDOUT_FILENO);
 	dup2(pipex->fdin, STDIN_FILENO);
 	close(pipex->fd[0]);
@@ -29,7 +41,12 @@ static void	child_process(t_pipex *pipex, char **envp)
 static void	child_process_bis(t_pipex *pipex, char **envp)
 {
 	if (pipex->fdout == -2)
+	{
+		ft_putstr_fd("permission denied: ", 2);
+		ft_putstr_fd(pipex->file2, 2);
+		ft_putstr_fd("\n", 2);
 		free_pipex(pipex, 1);
+	}
 	dup2(pipex->fd[0], STDIN_FILENO);
 	dup2(pipex->fdout, STDOUT_FILENO);
 	close(pipex->fd[0]);

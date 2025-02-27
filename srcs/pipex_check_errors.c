@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:59:44 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/27 11:39:17 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/27 17:18:59 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ void	check_fd(int fd, t_pipex *pipex, int file)
 	{
 		if (file == 1)
 		{
-			ft_putstr_fd("no such file : ", 2);
+			ft_putstr_fd("no such file or directory: ", 2);
 			ft_putstr_fd(pipex->file1, 2);
 			ft_putstr_fd("\n", 2);
 		}
 		else
 		{
-			ft_putstr_fd("no such file : ", 2);
+			ft_putstr_fd("no such file or directory: ", 2);
 			ft_putstr_fd(pipex->file2, 2);
 			ft_putstr_fd("\n", 2);
 		}
