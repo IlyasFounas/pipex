@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:43:23 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/27 11:24:58 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/02/28 19:15:04 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ static char	*return_path(char **tab, char *cmd)
 	int		i;
 
 	i = -1;
+	if (access(cmd, X_OK) == 0)
+		return (cmd);
 	while (tab[++i])
 	{
 		res = ft_strjoin(tab[i], "/");
