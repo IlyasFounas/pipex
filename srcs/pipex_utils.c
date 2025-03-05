@@ -6,30 +6,32 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 18:17:45 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/27 17:17:00 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/05 13:22:20 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	free_pipex(t_pipex *pipex, int exit_fd)
+static void	free_cmd(char **cmd)
 {
 	int	i;
 
 	i = -1;
+	while (cmd[++i])
+		free(cmd[i]);
+	free(cmd);
+}
+
+void	free_pipex(t_pipex *pipex, int exit_fd)
+{
 	if (pipex->file1)
 		free(pipex->file1);
 	if (pipex->file2)
 		free(pipex->file2);
 	if (pipex->cmd1)
-		while (pipex->cmd1[++i])
-			free(pipex->cmd1[i]);
-	i = -1;
+		free_cmd(pipex->cmd1);
 	if (pipex->cmd2)
-		while (pipex->cmd2[++i])
-			free(pipex->cmd2[i]);
-	free(pipex->cmd1);
-	free(pipex->cmd2);
+		free_cmd(pipex->cmd2);
 	close(pipex->fd[0]);
 	close(pipex->fd[1]);
 	close(pipex->fdout);

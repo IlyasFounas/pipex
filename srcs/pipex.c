@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 16:59:16 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/27 17:28:34 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/05 13:04:29 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ static void	child_process(t_pipex *pipex, char **envp)
 		ft_putstr_fd("\n", 2);
 		free_pipex(pipex, 1);
 	}
-	dup2(pipex->fd[1], STDOUT_FILENO);
-	dup2(pipex->fdin, STDIN_FILENO);
+	if (dup2(pipex->fd[1], STDOUT_FILENO) == -1)
+		free_pipex(pipex, 0);
+	if (dup2(pipex->fdin, STDIN_FILENO) == -1)
+		free_pipex(pipex, 0);
 	close(pipex->fd[0]);
 	close(pipex->fd[1]);
 	close(pipex->fdout);
@@ -47,8 +49,10 @@ static void	child_process_bis(t_pipex *pipex, char **envp)
 		ft_putstr_fd("\n", 2);
 		free_pipex(pipex, 1);
 	}
-	dup2(pipex->fd[0], STDIN_FILENO);
-	dup2(pipex->fdout, STDOUT_FILENO);
+	if (dup2(pipex->fd[0], STDIN_FILENO) == -1)
+		free_pipex(pipex, 1);
+	if (dup2(pipex->fdout, STDOUT_FILENO) == -1)
+		free_pipex(pipex, 1);
 	close(pipex->fd[0]);
 	close(pipex->fd[1]);
 	close(pipex->fdout);
@@ -67,6 +71,8 @@ int	main(int arc, char **arv, char **envp)
 	if (!pipex.file1)
 		free_pipex(&pipex, 1);
 	fill_pipex(&pipex, arv[4], arv[2], arv[3]);
+	if (pipex.fdout == -2)
+		pipex.exit_fd = 1;
 	if (pipe(pipex.fd) == -1)
 		free_pipex(&pipex, 1);
 	pipex.pid[0] = fork();
@@ -77,6 +83,6 @@ int	main(int arc, char **arv, char **envp)
 	check_fork(pipex.pid[1], &pipex);
 	if (pipex.pid[1] == 0)
 		child_process_bis(&pipex, envp);
-	free_pipex(&pipex, 0);
+	free_pipex(&pipex, pipex.exit_fd);
 	return (0);
 }

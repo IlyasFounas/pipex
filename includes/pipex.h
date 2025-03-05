@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 15:32:25 by ifounas           #+#    #+#             */
-/*   Updated: 2025/02/27 10:40:38 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/05 13:04:06 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_pipex
 	int		fdin;
 	int		fdout;
 	int		pid[2];
+	int		exit_fd;
 }			t_pipex;
 
 // pipex_check_errors.c
