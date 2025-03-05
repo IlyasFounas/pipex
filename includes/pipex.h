@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 15:32:25 by ifounas           #+#    #+#             */
-/*   Updated: 2025/03/05 13:04:06 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/05 17:30:07 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void		check_fd(int fd, t_pipex *pipex, int file);
 void		check_fork(pid_t p, t_pipex *pipex);
 
 // pipex_execute.c
-void		execute_cmd(t_pipex *pipex, char **cmd, char **envp);
+// void		execute_cmd(t_pipex *pipex, char **cmd, char **envp);
+void	execute_cmd(t_pipex *pipex, char **cmd, char **envp, int p);
 
 // pipex_utils.c
 void		fill_pipex(t_pipex *pipex, char *file2, char *cmd1, char *cmd2);

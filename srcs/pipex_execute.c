@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:43:23 by ifounas           #+#    #+#             */
-/*   Updated: 2025/03/05 16:37:22 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/05 17:33:23 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,19 +65,26 @@ static char	*return_right_path(char **envp, char *cmd)
 	return (free_tab(tab), path);
 }
 
-void	execute_cmd(t_pipex *pipex, char **cmd, char **envp)
+void	execute_cmd(t_pipex *pipex, char **cmd, char **envp, int p)
 {
 	char	*path;
 
 	path = return_right_path(envp, cmd[0]);
-	if (!path)
+	if (pipex->pid[1] == 0)
 	{
-		ft_putstr_fd("command not found: ", 2);
-		ft_putstr_fd(cmd[0], 2);
-		ft_putstr_fd("\n", 2);
-		free_pipex(pipex, 127);
+		if (!path)
+		{
+			ft_putstr_fd("command not found: ", 2);
+			ft_putstr_fd(cmd[0], 2);
+			ft_putstr_fd("\n", 2);
+			free_pipex(pipex, 127);
+		}
+		execve(path, cmd, envp);
+		free(path);
+		free_pipex(pipex, 1);
 	}
-	execve(path, cmd, envp);
-	free(path);
-	free_pipex(pipex, 1);
+	if (!path && p == 2)
+		pipex->exit_fd = 127;
+	else
+		free(path);
 }

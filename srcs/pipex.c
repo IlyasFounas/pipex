@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 16:59:16 by ifounas           #+#    #+#             */
-/*   Updated: 2025/03/05 13:04:29 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/05 17:32:06 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,36 +29,37 @@ static void	child_process(t_pipex *pipex, char **envp)
 		free_pipex(pipex, 1);
 	}
 	if (dup2(pipex->fd[1], STDOUT_FILENO) == -1)
-		free_pipex(pipex, 0);
+		free_pipex(pipex, 1);
 	if (dup2(pipex->fdin, STDIN_FILENO) == -1)
-		free_pipex(pipex, 0);
+		free_pipex(pipex, 1);
 	close(pipex->fd[0]);
 	close(pipex->fd[1]);
 	close(pipex->fdout);
 	close(pipex->fdin);
-	execute_cmd(pipex, pipex->cmd1, envp);
-	free_pipex(pipex, 0);
+	execute_cmd(pipex, pipex->cmd1, envp, 1);
 }
 
 static void	child_process_bis(t_pipex *pipex, char **envp)
 {
-	if (pipex->fdout == -2)
+	if (pipex->pid[1] == 0)
 	{
-		ft_putstr_fd("permission denied: ", 2);
-		ft_putstr_fd(pipex->file2, 2);
-		ft_putstr_fd("\n", 2);
-		free_pipex(pipex, 1);
+		if (pipex->fdout == -2)
+		{
+			ft_putstr_fd("permission denied: ", 2);
+			ft_putstr_fd(pipex->file2, 2);
+			ft_putstr_fd("\n", 2);
+			free_pipex(pipex, 1);
+		}
+		if (dup2(pipex->fd[0], STDIN_FILENO) == -1)
+			free_pipex(pipex, 1);
+		if (dup2(pipex->fdout, STDOUT_FILENO) == -1)
+			free_pipex(pipex, 1);
+		close(pipex->fd[0]);
+		close(pipex->fd[1]);
+		close(pipex->fdout);
+		close(pipex->fdin);
 	}
-	if (dup2(pipex->fd[0], STDIN_FILENO) == -1)
-		free_pipex(pipex, 1);
-	if (dup2(pipex->fdout, STDOUT_FILENO) == -1)
-		free_pipex(pipex, 1);
-	close(pipex->fd[0]);
-	close(pipex->fd[1]);
-	close(pipex->fdout);
-	close(pipex->fdin);
-	execute_cmd(pipex, pipex->cmd2, envp);
-	free_pipex(pipex, 0);
+	execute_cmd(pipex, pipex->cmd2, envp, 2);
 }
 
 int	main(int arc, char **arv, char **envp)
@@ -81,8 +82,7 @@ int	main(int arc, char **arv, char **envp)
 		child_process(&pipex, envp);
 	pipex.pid[1] = fork();
 	check_fork(pipex.pid[1], &pipex);
-	if (pipex.pid[1] == 0)
-		child_process_bis(&pipex, envp);
+	child_process_bis(&pipex, envp);
 	free_pipex(&pipex, pipex.exit_fd);
 	return (0);
 }
