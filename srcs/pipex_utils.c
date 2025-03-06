@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 18:17:45 by ifounas           #+#    #+#             */
-/*   Updated: 2025/03/05 13:22:20 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/06 12:00:58 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ static void	free_cmd(char **cmd)
 
 void	free_pipex(t_pipex *pipex, int exit_fd)
 {
+	int	status;
+
+	status = 0;
 	if (pipex->file1)
 		free(pipex->file1);
 	if (pipex->file2)
@@ -36,8 +39,14 @@ void	free_pipex(t_pipex *pipex, int exit_fd)
 	close(pipex->fd[1]);
 	close(pipex->fdout);
 	close(pipex->fdin);
-	waitpid(pipex->pid[0], NULL, 0);
-	waitpid(pipex->pid[1], NULL, 0);
+	if (waitpid(pipex->pid[0], &status, 0) == -1 && exit_fd != 127)
+		exit(1);
+	if (waitpid(pipex->pid[1], &status, 0) == -1 && exit_fd != 127)
+		exit(1);
+	if (WIFEXITED(status) && exit_fd != 127)
+		exit (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status) && exit_fd != 127)
+		exit (128 + WTERMSIG(status));
 	exit(exit_fd);
 }
 

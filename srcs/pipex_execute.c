@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:43:23 by ifounas           #+#    #+#             */
-/*   Updated: 2025/03/05 17:33:23 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/06 11:51:11 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,15 @@ void	execute_cmd(t_pipex *pipex, char **cmd, char **envp, int p)
 			ft_putstr_fd("\n", 2);
 			free_pipex(pipex, 127);
 		}
-		execve(path, cmd, envp);
-		free(path);
+		if (path)
+		{
+			execve(path, cmd, envp);
+			free(path);
+			free_pipex(pipex, 1);
+		}
 		free_pipex(pipex, 1);
 	}
-	if (!path && p == 2)
+	if (!path && p == 2 && pipex->pid[1] != 0)
 		pipex->exit_fd = 127;
 	else
 		free(path);

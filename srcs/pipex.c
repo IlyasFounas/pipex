@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 16:59:16 by ifounas           #+#    #+#             */
-/*   Updated: 2025/03/05 17:32:06 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/06 11:44:07 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,5 @@ int	main(int arc, char **arv, char **envp)
 	check_fork(pipex.pid[1], &pipex);
 	child_process_bis(&pipex, envp);
 	free_pipex(&pipex, pipex.exit_fd);
-	return (0);
+	return (pipex.exit_fd);
 }
