@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 18:17:45 by ifounas           #+#    #+#             */
-/*   Updated: 2025/03/06 12:00:58 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/06 13:59:34 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,18 @@ static void	free_cmd(char **cmd)
 	free(cmd);
 }
 
+static void	close_fds(t_pipex *pipex)
+{
+	if (pipex->fd[0] != -1)
+		close(pipex->fd[0]);
+	if (pipex->fd[1] != -1)
+		close(pipex->fd[1]);
+	if (pipex->fdout != -1)
+		close(pipex->fdout);
+	if (pipex->fdin != -1)
+		close(pipex->fdin);
+}
+
 void	free_pipex(t_pipex *pipex, int exit_fd)
 {
 	int	status;
@@ -35,18 +47,15 @@ void	free_pipex(t_pipex *pipex, int exit_fd)
 		free_cmd(pipex->cmd1);
 	if (pipex->cmd2)
 		free_cmd(pipex->cmd2);
-	close(pipex->fd[0]);
-	close(pipex->fd[1]);
-	close(pipex->fdout);
-	close(pipex->fdin);
+	close_fds(pipex);
 	if (waitpid(pipex->pid[0], &status, 0) == -1 && exit_fd != 127)
 		exit(1);
 	if (waitpid(pipex->pid[1], &status, 0) == -1 && exit_fd != 127)
 		exit(1);
 	if (WIFEXITED(status) && exit_fd != 127)
-		exit (WEXITSTATUS(status));
+		exit(WEXITSTATUS(status));
 	else if (WIFSIGNALED(status) && exit_fd != 127)
-		exit (128 + WTERMSIG(status));
+		exit(128 + WTERMSIG(status));
 	exit(exit_fd);
 }
 

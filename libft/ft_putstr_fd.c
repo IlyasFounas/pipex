@@ -6,7 +6,7 @@
 /*   By: ifounas <ifounas@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 11:52:06 by ifounas           #+#    #+#             */
-/*   Updated: 2024/11/25 16:01:30 by ifounas          ###   ########.fr       */
+/*   Updated: 2025/03/06 13:48:24 by ifounas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 void	ft_putstr_fd(char *s, int fd)
 {
-	int	i;
-
-	i = 0;
 	if (s == NULL)
 		return ;
 	write(fd, s, ft_strlen(s));
