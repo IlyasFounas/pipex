@@ -10,13 +10,6 @@
 - Uses a structured approach to store important variables, making modifications easier.
 - Basic error handling (e.g., file not found, invalid command).
 
-## Limitations & Possible Improvements ⚠️
-
-🔍 **Known bug:** If a command is given with an absolute path (`/usr/bin/cat`) and is invalid, the error message displays:
-> `command not found: /usr/bin/cat`
-Instead of:
-> `command not found: cat`
-
 🎯 **Possible improvements:** Of course, this project can be optimized, but my goal is to share my code and hopefully inspire you!
 
 ## Compilation & Execution 🚀
